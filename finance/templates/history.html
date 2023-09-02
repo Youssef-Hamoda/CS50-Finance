@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <table class="portfolio-table">
+        <thead>
+            <tr>
+                <th>Stock</th>
+                <th>Transaction</th>
+                <th>Price</th>
+                <th>Shares</th>
+                <th>Total</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in History %}
+                <tr>
+                    <td>{{ transaction.stock }}</td>
+                    <td>{{ transaction.type }}</td>
+                    <td>{{ transaction.price_per }}</td>
+                    <td>{{ transaction.quantity }}</td>
+                    <td>{{ transaction.price }}</td>
+                    <td>{{ transaction.time }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

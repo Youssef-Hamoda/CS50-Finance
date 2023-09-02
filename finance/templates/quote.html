@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <div class = "mb-3">
+        <form action="/quote" method="post" onsubmit="addQuote()">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Stock symbol" type="text" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Quote</button>
+        </form>
+    </div>
+    <h2>Quote History</h2>
+    <table class="portfolio-table" id="quotesTable">
+        <thead>
+            <tr>
+                <th>Stock</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    <script>
+        function addQuote() {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+
+            const formData = new FormData();
+            formData.append("name", name);
+
+
+            fetch("/quote", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    const tableBody = document.querySelector("#quotesTable tbody");
+                    const newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td>${data.name}</td>
+                        <td>$${data.price}</td>
+                    `;
+                    tableBody.appendChild(newRow);
+
+                    document.getElementById("name").value = "";
+                }
+            });
+        }
+    </script>
+{% endblock %}

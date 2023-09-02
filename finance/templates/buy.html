@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <div class="mb-3">
+        <form action="/buy" method="post" onsubmit="addBuy()">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="name" name="name" placeholder="Stock symbol" type="text" required>
+            </div>
+            <div class="mb-3">
+                <input class="form-control mx-auto w-auto" id="quantity" name="quantity" placeholder="Quantity" type="number" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Buy</button>
+        </form>
+    </div>
+    <h2>Purchase History</h2>
+    <table class="portfolio-table" id="buyTable">
+        <thead>
+            <tr>
+                <th>Transaction</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Shares</th>
+                <th>Total</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in History %}
+                <tr>
+                    <td>{{ transaction.type }}</td>
+                    <td>{{ transaction.stock }}</td>
+                    <td>{{ transaction.price_per }}</td>
+                    <td>{{ transaction.quantity }}</td>
+                    <td>{{ transaction.price }}</td>
+                    <td>{{ transaction.time }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        function addBuy() {
+            event.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const quantity = document.getElementById("quantity").value;
+
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("quantity", quantity);
+
+            fetch("/buy", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+
+                    const tableBody = document.querySelector("#buyTable tbody");
+                    const newRow = document.createElement("tr");
+                    newRow.innerHTML = `
+                        <td>${data.type}</td>
+                        <td>${data.name}</td>
+                        <td>${data.price_per}</td>
+                        <td>${data.quantity}</td>
+                        <td>${data.price}</td>
+                        <td>${data.time}</td>
+                    `;
+                    tableBody.appendChild(newRow);
+
+                    document.getElementById("name").value = "";
+                    document.getElementById("quantity").value = "";
+
+                    const cashCounter = document.querySelector("#cash_counter a");
+                    cashCounter.innerHTML = `Cash: ${data.cash}`;
+                }
+            });
+        }
+    </script>
+{% endblock %}

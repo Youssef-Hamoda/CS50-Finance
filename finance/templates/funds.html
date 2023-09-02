@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <div class="mb-3">
+        <form action="/funds" method="post" onsubmit="addFunds()">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="funds" name="funda" placeholder="Funds" type="number" required>
+            </div>
+            <button class="btn btn-primary" type="submit">Deposit</button>
+        </form>
+    </div>
+    <script>
+        function addFunds() {
+            event.preventDefault();
+
+            const funds = document.getElementById("funds").value;
+
+            const formData = new FormData();
+            formData.append("funds", funds);
+
+            fetch("/funds", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    const cashCounter = document.querySelector("#cash_counter a");
+                    cashCounter.innerHTML = `Cash: ${data.cash}`;
+
+                    document.getElementById("funds").value = "";
+
+                }
+            });
+        }
+    </script>
+{% endblock %}

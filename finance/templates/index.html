@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <table class="portfolio-table">
+        <thead>
+            <tr>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Shares</th>
+                <th>Percent Change</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in Stocks %}
+                <tr>
+                    <td>{{ stock.stock }}</td>
+                    <td>{{ stock.price_per }}</td>
+                    <td>{{ stock.quantity }}</td>
+                    <td id="percent_change">{{ stock.percent_change }}</td>
+                    <td>{{ stock.price }}</td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td class="border-0 fw-bold text-end" colspan="4">Cash</td>
+                    <td>{{ Cash }}</td>
+                </tr>
+                <tr>
+                    <td class="border-0 fw-bold text-end" colspan="4">Total</td>
+                    <td>{{ portfolio_value }}</td>
+                </tr>
+        </tbody>
+    </table>
+    <script>
+        function checkpos() {
+            var percentChangeElement = document.getElementById('percent_change');
+            var innerHTML = percentChangeElement.innerHTML.trim();
+
+            if (innerHTML.startsWith('+')) {
+                return 'positive';
+            } else {
+                return 'negative';
+            }
+        }
+    </script>
+{% endblock %}
